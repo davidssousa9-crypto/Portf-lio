@@ -1,0 +1,177 @@
+:root {
+            --bg-color: #080808;
+            --snd-bg-color: #131313;
+            --text-color: #ffffff;
+            --main-color: #8DDBFC;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px;
+            background-color: #040406;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* BACKGROUND SURPRESA: Nebulosa Fluida Animada em CSS Puro */
+        .bg-glow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+            background: #040406;
+        }
+
+        .blob {
+            position: absolute;
+            background: radial-gradient(circle, rgba(141, 219, 252, 0.22) 0%, transparent 65%);
+            border-radius: 50%;
+            filter: blur(60px);
+            mix-blend-mode: screen;
+            animation: floatAnimation 20s infinite alternate ease-in-out;
+        }
+
+        /* Configuração de posições e tamanhos diferentes para os pontos de luz */
+        .blob-1 {
+            width: 600px;
+            height: 600px;
+            top: -10%;
+            left: -10%;
+            animation-duration: 25s;
+        }
+
+        .blob-2 {
+            width: 500px;
+            height: 500px;
+            bottom: -5%;
+            right: -5%;
+            background: radial-gradient(circle, rgba(141, 219, 252, 0.18) 0%, transparent 70%);
+            animation-duration: 18s;
+            animation-delay: -5s;
+        }
+
+        .blob-3 {
+            width: 400px;
+            height: 400px;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(141, 219, 252, 0.15) 0%, transparent 60%);
+            animation-duration: 30s;
+            animation-delay: -10s;
+        }
+
+        /* Animação orgânica que move e deforma as luzes de fundo */
+        @keyframes floatAnimation {
+            0% {
+                transform: translate(0px, 0px) scale(1) rotate(0deg);
+            }
+            33% {
+                transform: translate(40px, -60px) scale(1.15) rotate(120deg);
+            }
+            66% {
+                transform: translate(-50px, 30px) scale(0.85) rotate(240deg);
+            }
+            100% {
+                transform: translate(0px, 0px) scale(1) rotate(360deg);
+            }
+        }
+
+        /* Linhas de Grid Tecnológicas bem discretas sobrepostas à nebulosa */
+        .bg-glow-container::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.008) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.008) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .atividades {
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 70px;
+            width: 100%;
+        }
+
+        .eixo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 35px;
+            width: 100%;
+        }
+
+        h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            text-align: center;
+            text-shadow: 0 0 12px rgba(141, 219, 252, 0.6), 0 0 35px rgba(141, 219, 252, 0.2);
+            margin: 0;
+        }
+
+        .image-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            width: 100%;
+        }
+
+        img {
+            width: 240px;
+            height: auto;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background-color: rgba(19, 19, 19, 0.6);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            object-fit: cover;
+            backdrop-filter: blur(5px); /* Dá um efeito leve de vidro nas bordas da imagem */
+            
+            
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><ellipse cx="16" cy="16" rx="11" ry="5" fill="none" stroke="%238DDBFC" stroke-width="2"/><ellipse cx="16" cy="16" rx="5" ry="11" fill="none" stroke="%238DDBFC" stroke-width="2"/><circle cx="16" cy="16" r="2.5" fill="%238DDBFC"/></svg>') 16 16, crosshair;
+            
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease, border 0.4s ease;
+            will-change: transform;
+        }
+
+        img:hover {
+            border: 2px solid var(--main-color);
+            box-shadow: 0 0 30px rgba(141, 219, 252, 0.35), 0 15px 40px rgba(0, 0, 0, 0.7);
+        }
+    
+p{
+    display: flex;
+    position: inherit;
+    align-items: center;
+    justify-content: unset;
+    margin-top: 8px;
+    color: white;
+    font-size: 12px;
+}

@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://fonts.cdnfonts.com/css/acknowledgement" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #050a18;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ===== BACKGROUND ANIMADO ===== */
+        .bg-gradient {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 40%, rgba(30, 79, 184, 0.25) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 20%, rgba(59, 130, 246, 0.2) 0%, transparent 55%),
+                radial-gradient(ellipse 70% 60% at 50% 90%, rgba(30, 79, 184, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 40% at 70% 70%, rgba(99, 179, 255, 0.08) 0%, transparent 50%);
+            z-index: 0;
+            animation: bgShift 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgShift {
+            0% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.8; transform: scale(1); }
+        }
+
+        canvas#particulas {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ===== GLOW ORBS ===== */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            animation: orbFloat 20s ease-in-out infinite alternate;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: rgba(59, 130, 246, 0.12);
+            top: -100px;
+            left: -100px;
+            animation-duration: 18s;
+        }
+
+        .orb-2 {
+            width: 350px;
+            height: 350px;
+            background: rgba(30, 79, 184, 0.1);
+            bottom: -80px;
+            right: -80px;
+            animation-duration: 22s;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 250px;
+            height: 250px;
+            background: rgba(99, 179, 255, 0.08);
+            top: 50%;
+            left: 60%;
+            animation-duration: 25s;
+            animation-delay: -10s;
+        }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.1); }
+            66% { transform: translate(-20px, 30px) scale(0.95); }
+            100% { transform: translate(10px, -10px) scale(1.05); }
+        }
+
+        /* ===== CARD PRINCIPAL ===== */
+        .center {
+            position: relative;
+            z-index: 10;
+            width: 440px;
+            background: rgba(8, 16, 38, 0.65);
+            backdrop-filter: blur(24px) saturate(1.4);
+            -webkit-backdrop-filter: blur(24px) saturate(1.4);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 24px;
+            padding: 0 40px 36px 40px;
+            box-shadow:
+                0 0 0 1px rgba(59, 130, 246, 0.05),
+                0 8px 32px rgba(0, 0, 0, 0.5),
+                0 32px 64px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            animation: cardAppear 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px) scale(0.97);
+        }
+
+        @keyframes cardAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .center::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 25px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), transparent 40%, transparent 60%, rgba(99, 179, 255, 0.2));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            animation: borderGlow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes borderGlow {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* ===== HEADER / TÍTULO ===== */
+        .header {
+            text-align: center;
+            padding: 32px 0 24px 0;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .header .icon-wrapper {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px auto;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(30, 79, 184, 0.1));
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.2); }
+            50% { box-shadow: 0 0 20px 4px rgba(59, 130, 246, 0.15); }
+        }
+
+        .header .icon-wrapper svg {
+            width: 28px;
+            height: 28px;
+            stroke: #60a5fa;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .header h1 {
+            font-family: 'Acknowledgement', sans-serif;
+            font-size: 28px;
+            font-weight: 500;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 13px;
+            margin-top: 6px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== ABAS ===== */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin: 20px 0 4px 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 14px;
+            padding: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .tabs button {
+            flex: 1;
+            padding: 11px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.4);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            letter-spacing: 0.3px;
+        }
+
+        .tabs button:hover:not(.ativo) {
+            color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .tabs button.ativo {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(30, 79, 184, 0.2));
+            color: #93c5fd;
+            box-shadow:
+                0 0 16px rgba(59, 130, 246, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .tabs button.ativo::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 2px;
+            background: #60a5fa;
+            border-radius: 2px;
+            box-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
+        }
+
+        /* ===== FORMULÁRIOS ===== */
+        .formulario {
+            display: none;
+            animation: formFadeIn 0.4s ease forwards;
+        }
+
+        .formulario.ativo {
+            display: block;
+        }
+
+        @keyframes formFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== CAMPOS DE INPUT ===== */
+        .txt_field {
+            position: relative;
+            margin: 26px 0;
+        }
+
+        .txt_field .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 0 16px;
+            transition: all 0.3s ease;
+        }
+
+        .txt_field .input-wrapper:hover {
+            border-color: rgba(59, 130, 246, 0.2);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .txt_field .input-wrapper:focus-within {
+            border-color: rgba(59, 130, 246, 0.4);
+            background: rgba(59, 130, 246, 0.05);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08), 0 0 20px rgba(59, 130, 246, 0.05);
+        }
+
+        .txt_field .input-icon {
+            width: 18px;
+            height: 18px;
+            stroke: rgba(255, 255, 255, 0.25);
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+            margin-right: 12px;
+            transition: stroke 0.3s ease;
+        }
+
+        .txt_field .input-wrapper:focus-within .input-icon {
+            stroke: #60a5fa;
+        }
+
+        .txt_field input {
+            width: 100%;
+            padding: 14px 0;
+            font-size: 14px;
+            border: none;
+            background: none;
+            outline: none;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+        }
+
+        .txt_field input::placeholder {
+            color: transparent;
+        }
+
+        .txt_field label {
+            position: absolute;
+            top: 50%;
+            left: 44px;
+            color: rgba(255, 255, 255, 0.35);
+            transform: translateY(-50%);
+            font-size: 14px;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            font-weight: 400;
+        }
+
+        .txt_field input:focus ~ label,
+        .txt_field input:not(:placeholder-shown) ~ label {
+            top: -8px;
+            left: 12px;
+            font-size: 11px;
+            color: #60a5fa;
+            background: #0a1428;
+            padding: 0 6px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== LINK "ESQUECEU A SENHA" ===== */
+        .pass {
+            margin-bottom: 24px;
+            color: rgba(96, 165, 250, 0.6);
+            cursor: pointer;
+            font-size: 12.5px;
+            text-align: right;
+            transition: color 0.3s ease;
+            font-weight: 400;
+        }
+
+        .pass:hover {
+            color: #93c5fd;
+        }
+
+        /* ===== BOTÕES ===== */
+        .botoes {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .botoes input {
+            flex: 1;
+            height: 46px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-conectar {
+            border: none;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: white;
+            box-shadow:
+                0 4px 16px rgba(37, 99, 235, 0.3),
+                0 1px 2px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-conectar:hover {
+            transform: translateY(-1px);
+            box-shadow:
+                0 8px 24px rgba(37, 99, 235, 0.4),
+                0 2px 4px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-conectar:active {
+            transform: translateY(0);
+            box-shadow:
+                0 2px 8px rgba(37, 99, 235, 0.3),
+                inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-cancelar {
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: rgba(59, 130, 246, 0.05);
+            color: rgba(147, 197, 253, 0.7);
+        }
+
+        .btn-cancelar:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            background: rgba(59, 130, 246, 0.1);
+            color: #93c5fd;
+            transform: translateY(-1px);
+        }
+
+        .btn-cancelar:active {
+            transform: translateY(0);
+        }
+
+        /* ===== LINK DE CADASTRO ===== */
+        .signup_link {
+            margin: 24px 0 0 0;
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .signup_link a {
+            color: #60a5fa;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .signup_link a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #60a5fa;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 6px rgba(96, 165, 250, 0.4);
+        }
+
+        .signup_link a:hover::after {
+            width: 100%;
+        }
+
+        .signup_link a:hover {
+            color: #93c5fd;
+        }
+
+        /* ===== MENSAGEM DE ERRO ===== */
+        #mensagem {
+            display: none;
+            width: 100%;
+            text-align: center;
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin: 20px 0 0 0;
+            font-size: 13px;
+            font-weight: 500;
+            animation: msgShake 0.4s ease;
+        }
+
+        @keyframes msgShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 500px) {
+            .center {
+                width: 92%;
+                padding: 0 24px 28px 24px;
+                border-radius: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .header .icon-wrapper {
+                width: 56px;
+                height: 56px;
+                border-radius: 14px;
+            }
+
+            .botoes {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .botoes input {
+                height: 44px;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.3); border-radius: 4px; }
+    </style>
+</head>
+
+<body>
+    <div class="bg-gradient"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <canvas id="particulas"></canvas>
+
+    <div class="center">
+        <div class="header">
+            <div class="icon-wrapper">
+                <svg viewBox="0 0 24 24">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                    <polyline points="10 17 15 12 10 7"/>
+                    <line x1="15" y1="12" x2="3" y2="12"/>
+                </svg>
+            </div>
+            <h1>Bem-vindo</h1>
+            <p>Acesse sua conta para continuar</p>
+        </div>
+
+        <div class="tabs">
+            <button id="tabLogin" class="ativo" onclick="mostrarAba('login')">Entrar</button>
+            <button id="tabCadastro" onclick="mostrarAba('cadastro')">Cadastrar</button>
+        </div>
+
+        <div id="formLogin" class="formulario ativo">
+            <form onsubmit="logar(); return false;">
+                <div class="txt_field">
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24">
+                            <rect x="2" y="4" width="20" height="16" rx="3"/>
+                            <path d="M22 7l-10 6L2 7"/>
+                        </svg>
+                        <input type="email" id="loginEmail" placeholder=" " required>
+                        <label>E-mail</label>
+                    </div>
+                </div>
+
+                <div class="txt_field">
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24">
+                            <rect x="3" y="11" width="18" height="11" rx="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                        <input type="password" id="loginSenha" placeholder=" " required>
+                        <label>Senha</label>
+                    </div>
+                </div>
+
+                <div class="pass">esqueceu a senha?</div>
+
+                <div class="botoes">
+                    <input type="submit" value="Entrar" class="btn-conectar">
+                    <input type="button" value="Cancelar" class="btn-cancelar" onclick="cancelar()">
+                </div>
+
+                <div class="signup_link">
+                    <a href="#" onclick="mostrarAba('cadastro'); return false;">Não tem uma conta? Cadastre-se</a>
+                </div>
+            </form>
+        </div>
+
+        <div id="formCadastro" class="formulario">
+            <form onsubmit="cadastrar(); return false;">
+                <div class="txt_field">
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <input type="text" id="cadNome" placeholder=" " required>
+                        <label>Nome</label>
+                    </div>
+                </div>
+
+                <div class="txt_field">
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24">
+                            <rect x="2" y="4" width="20" height="16" rx="3"/>
+                            <path d="M22 7l-10 6L2 7"/>
+                        </svg>
+                        <input type="email" id="cadEmail" placeholder=" " required>
+                        <label>E-mail</label>
+                    </div>
+                </div>
+
+                <div class="txt_field">
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24">
+                            <rect x="3" y="11" width="18" height="11" rx="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                        <input type="password" id="cadSenha" placeholder=" " required>
+                        <label>Senha</label>
+                    </div>
+                </div>
+
+                <div class="txt_field">
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                        <input type="password" id="cadSenha2" placeholder=" " required>
+                        <label>Confirmar Senha</label>
+                    </div>
+                </div>
+
+                <div class="botoes">
+                    <input type="submit" value="Cadastrar" class="btn-conectar">
+                    <input type="button" value="Cancelar" class="btn-cancelar" onclick="cancelar()">
+                </div>
+
+                <div id="mensagem"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ===== PARTICULAS =====
+        (function () {
+            var canvas = document.getElementById('particulas');
+            var ctx = canvas.getContext('2d');
+            var particles = [];
+            var particleCount = 60;
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            resize();
+            window.addEventListener('resize', resize);
+
+            function Particle() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+
+            Particle.prototype.update = function () {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            };
+
+            Particle.prototype.draw = function () {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(96, 165, 250, ' + this.opacity + ')';
+                ctx.fill();
+            };
+
+            for (var i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            function connectParticles() {
+                for (var a = 0; a < particles.length; a++) {
+                    for (var b = a + 1; b < particles.length; b++) {
+                        var dx = particles[a].x - particles[b].x;
+                        var dy = particles[a].y - particles[b].y;
+                        var dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 120) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = 'rgba(59, 130, 246, ' + (0.06 * (1 - dist / 120)) + ')';
+                            ctx.lineWidth = 0.5;
+                            ctx.moveTo(particles[a].x, particles[a].y);
+                            ctx.lineTo(particles[b].x, particles[b].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (var i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+                connectParticles();
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        })();
+
+        // ===== FUNÇÕES DO LOGIN =====
+        function mostrarAba(aba) {
+            var isLogin = aba === 'login';
+            document.getElementById('tabLogin').classList.toggle('ativo', isLogin);
+            document.getElementById('tabCadastro').classList.toggle('ativo', !isLogin);
+            document.getElementById('formLogin').classList.toggle('ativo', isLogin);
+            document.getElementById('formCadastro').classList.toggle('ativo', !isLogin);
+            document.getElementById('mensagem').style.display = 'none';
+        }
+
+        function exibirMensagem(texto) {
+            var el = document.getElementById('mensagem');
+            el.textContent = texto;
+            el.style.display = 'block';
+            el.style.animation = 'none';
+            el.offsetHeight;
+            el.style.animation = 'msgShake 0.4s ease';
+        }
+
+        function apiBase() {
+            return location.port === '8000' ? '' : 'http://localhost:8000';
+        }
+
+        function carregarUsuariosLocais() {
+            try {
+                return JSON.parse(localStorage.getItem('usuarios_locais')) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function buscarUsuarioLocal(email, senha) {
+            var lista = carregarUsuariosLocais();
+            for (var i = 0; i < lista.length; i++) {
+                if (lista[i].email === email && lista[i].senha === senha) {
+                    return lista[i];
+                }
+            }
+            return null;
+        }
+
+        function apiIndisponivel(r) {
+            return r.status === 405 || r.status === 404 || r.status === 501;
+        }
+
+        function logar() {
+            var email = document.getElementById('loginEmail').value.trim();
+            var senha = document.getElementById('loginSenha').value;
+
+            if (email === 'admin@senai' && senha === '123') {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            var usuarioLocal = buscarUsuarioLocal(email.toLowerCase(), senha);
+
+            fetch(apiBase() + '/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, senha: senha })
+            })
+            .then(function (r) {
+                if (apiIndisponivel(r)) throw new Error('no-api');
+                return r.json();
+            })
+            .then(function (dados) {
+                if (dados.sucesso) {
+                    alert('Login realizado com sucesso! Bem-vindo, ' + dados.nome + '!');
+                    window.location.href = 'index.html';
+                } else {
+                    alert(dados.erro || 'Credenciais inválidas!');
+                }
+            })
+            .catch(function () {
+                if (usuarioLocal) {
+                    alert('Login realizado com sucesso! Bem-vindo, ' + usuarioLocal.nome + '!');
+                    window.location.href = 'index.html';
+                } else if (carregarUsuariosLocais().length > 0) {
+                    alert('Credenciais inválidas!');
+                } else {
+                    alert('Não foi possível conectar ao servidor. Usuário não encontrado no modo offline.');
+                }
+            });
+        }
+
+        function cadastrar() {
+            var nome = document.getElementById('cadNome').value.trim();
+            var email = document.getElementById('cadEmail').value.trim().toLowerCase();
+            var senha = document.getElementById('cadSenha').value;
+            var senha2 = document.getElementById('cadSenha2').value;
+
+            exibirMensagem('');
+
+            if (!nome || !email || !senha || !senha2) {
+                exibirMensagem('Preencha todos os campos.');
+                return;
+            }
+
+            if (senha !== senha2) {
+                exibirMensagem('As senhas não coincidem.');
+                return;
+            }
+
+            fetch(apiBase() + '/api/cadastro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome: nome, email: email, senha: senha })
+            })
+            .then(function (r) {
+                if (apiIndisponivel(r)) throw new Error('no-api');
+                return r.json();
+            })
+            .then(function (dados) {
+                if (dados.sucesso) {
+                    alert('Cadastro realizado com sucesso! Faça login para continuar.');
+                    mostrarAba('login');
+                    document.getElementById('loginEmail').value = email;
+                } else {
+                    exibirMensagem(dados.erro || 'Erro ao cadastrar.');
+                }
+            })
+            .catch(function () {
+                var lista = carregarUsuariosLocais();
+                for (var i = 0; i < lista.length; i++) {
+                    if (lista[i].email === email) {
+                        exibirMensagem('E-mail já cadastrado.');
+                        return;
+                    }
+                }
+                lista.push({ nome: nome, email: email, senha: senha });
+                localStorage.setItem('usuarios_locais', JSON.stringify(lista));
+                alert('Cadastro realizado com sucesso! Faça login para continuar.');
+                mostrarAba('login');
+                document.getElementById('loginEmail').value = email;
+            });
+        }
+
+        function cancelar() {
+            window.location.href = 'index.html';
+        }
+    </script>
+
+</body>
+
+</html>

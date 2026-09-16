@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eixos de Estudos — Portfólio Premium</title>
+    
+    <style>
+        /* ==========================================
+           IDENTIDADE VISUAL & VARIÁVEIS (Apple/Linear)
+           ========================================== */
+        :root {
+            --bg-color: #080808;
+            --snd-bg-color: #131313;
+            --text-color: #ffffff;
+            --main-color: #8DDBFC;
+            
+            --card-bg: rgba(19, 19, 19, 0.65);
+            --card-border: rgba(255, 255, 255, 0.06);
+            --text-muted: #a1a1a6;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        /* ==========================================
+           RESET & CONFIGURAÇÕES GLOBAIS
+           ========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-sans);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 24px;
+            position: relative;
+        }
+
+        /* Efeito Glow de Fundo */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(141, 219, 252, 0.04) 0%, rgba(0, 0, 0, 0) 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ==========================================
+           ESTRUTURA DO COMPONENTE SLIDER
+           ========================================== */
+        .slider-container {
+            width: 100%;
+            max-width: 900px;
+            z-index: 1;
+        }
+
+        .slider-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 28px;
+            padding: 48px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            transition: border-color 0.5s ease;
+        }
+
+        .slider-card:hover {
+            border-color: rgba(141, 219, 252, 0.15);
+        }
+
+        .slides-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Estado padrão dos Itens do Slide (Ocultos) */
+        .slide-item {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Exibe apenas o slide ativo */
+        .slide-item.active {
+            display: flex;
+        }
+
+        /* Elementos Internos do Slide */
+        .slide-title {
+            font-size: 2.25rem;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            margin-bottom: 32px;
+        }
+
+        .slide-image-wrapper {
+            width: 60%;
+            aspect-ratio: 16 / 9;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: var(--snd-bg-color);
+            margin-bottom: 32px;
+        }
+
+        .slide-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .slide-item:hover .slide-image {
+            transform: scale(1.04);
+        }
+
+        .slide-description {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            max-width: 560px;
+            height: 5rem;
+            margin-bottom: 32px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .slide-btn a {
+            background-color: var(--main-color);
+            color: var(--text-color);
+            border: 1px solid rgba(141, 219, 252, 0.3);
+            padding: 12px 32px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 100px;
+            cursor: pointer;
+            margin-bottom: 40px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .slide-btn a:hover {
+            background-color: var(--main-color);
+            color: var(--bg-color);
+            transform: scale(1.03);
+            box-shadow: 0 0 25px rgba(141, 219, 252, 0.35);
+        }
+
+        /* ==========================================
+           CONTROLES & INDICADORES (DOTS)
+           ========================================== */
+        .slider-controls {
+            display: flex;
+            align-items: center;
+            gap: 36px;
+        }
+
+        .nav-arrow {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-color);
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nav-arrow:hover {
+            border-color: var(--main-color);
+            color: var(--main-color);
+            box-shadow: 0 0 15px rgba(141, 219, 252, 0.15);
+        }
+
+        .slider-indicators {
+            display: flex;
+            gap: 10px;
+        }
+
+        .indicator-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .indicator-dot.active {
+            background: var(--main-color);
+            width: 20px;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(141, 219, 252, 0.5);
+        }
+
+        /* ==========================================
+           CLASSES DE TRANSIÇÃO (400ms - 600ms total)
+           ========================================== */
+        .slide-item.to-left, .slide-item.to-right, .slide-item.from-left, .slide-item.from-right {
+            display: flex;
+        }
+
+        .slide-item.to-left {
+            animation: fadeOutLeft 0.25s forwards cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide-item.from-right {
+            animation: fadeInRight 0.25s forwards cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide-item.to-right {
+            animation: fadeOutRight 0.25s forwards cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide-item.from-left {
+            animation: fadeInLeft 0.25s forwards cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeOutLeft {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(-20px); }
+        }
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeOutRight {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(20px); }
+        }
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ==========================================
+           RESPONSIVIDADE (Mobile Layout)
+           ========================================== */
+        @media (max-width: 768px) {
+            .slide-image-wrapper { width: 80%; }
+        }
+
+        @media (max-width: 520px) {
+            .slider-card { padding: 32px 20px; }
+            
+            .slide-item.active, .slide-item.to-left, .slide-item.to-right {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            /* Reordenação Estrutural Mobile */
+            .slide-image-wrapper { width: 100%; order: 1; margin-bottom: 24px; }
+            .slide-title { font-size: 1.75rem; order: 2; margin-bottom: 16px; }
+            .slide-description { font-size: 0.95rem; height: auto; order: 3; margin-bottom: 24px; }
+            .slide-btn { width: 100%; order: 4; margin-bottom: 32px; }
+            .slider-controls { width: 100%; justify-content: space-between; order: 5; }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="slider-container">
+        <div class="slider-card" id="sliderCard">
+            
+            <div class="slides-wrapper">
+                
+                <div class="slide-item active">
+                    <h2 class="slide-title">Eixo 1: Inovação Digital</h2>
+                    <div class="slide-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop" alt="Inovação Digital" class="slide-image">
+                    </div>
+                    <p class="slide-description">Exploração de tecnologias emergentes, arquiteturas de sistemas escaláveis e transformação de ideias em protótipos de alta fidelidade prontos para o ecossistema moderno.</p>
+                    <a class="slide-btn" href="atividades.html">Acessar Atividades</a>
+                </div>
+
+                <div class="slide-item">
+                    <h2 class="slide-title">Eixo 2: Experiência do Usuário (UI/UX)</h2>
+                    <div class="slide-image-wrapper">
+                        <img src="./img/1 copy 2.png" alt="Experiência do Usuário" class="slide-image">
+                    </div>
+                    <p class="slide-description">Imersão nos fundamentos do design de interfaces premium. Aprendizado focado em consistência visual, jornadas intuitivas, tipografia avançada e micro-interações elegantes.</p>
+                    <button class="slide-btn">Acessar Atividades</button>
+                </div>
+
+                <div class="slide-item">
+                    <h2 class="slide-title">Eixo 3: Otimização & Performance</h2>
+                    <div class="slide-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1618005198143-e5283b519a7f?q=80&w=1000&auto=format&fit=crop" alt="Otimização & Performance" class="slide-image">
+                    </div>
+                    <p class="slide-description">Desenvolvimento técnico voltado à máxima eficiência de renderização, análise de consumo de recursos computacionais e refatoração inteligente para código limpo.</p>
+                    <button class="slide-btn">Acessar Atividades</button>
+                </div>
+
+                <div class="slide-item">
+                    <h2 class="slide-title">Eixo 4: Inteligência & Ecossistemas</h2>
+                    <div class="slide-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=1000&auto=format&fit=crop" alt="Inteligência & Ecossistemas" class="slide-image">
+                    </div>
+                    <p class="slide-description">Integração semântica de APIs, fluxos automatizados de dados estruturados e implementação de regras de negócio sofisticadas para sistemas web modernos e resilientes.</p>
+                    <button class="slide-btn">Acessar Atividades</button>
+                </div>
+
+            </div>
+            
+            <div class="slider-controls">
+                <button class="nav-arrow prev" id="prevBtn" aria-label="Eixo Anterior">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                </button>
+                
+                <div class="slider-indicators" id="sliderIndicators"></div>
+                
+                <button class="nav-arrow next" id="nextBtn" aria-label="Próximo Eixo">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // ==========================================
+        // LÓGICA DE CONTROLE DO SLIDER (VANILLA JS)
+        // ==========================================
+        const slides = document.querySelectorAll('.slide-item');
+        const elBtnPrev = document.getElementById('prevBtn');
+        const elBtnNext = document.getElementById('nextBtn');
+        const elContainerIndicadores = document.getElementById('sliderIndicators');
+
+        let indiceAtual = 0;
+        let emAnimacao = false;
+        const tempoMetadeTransicao = 250; // 250ms saída + 250ms entrada = 500ms totais
+
+        // Renderiza os dots com base na quantidade de slides presentes no HTML
+        function inicializarIndicadores() {
+            elContainerIndicadores.innerHTML = '';
+            slides.forEach((_, indice) => {
+                const dot = document.createElement('div');
+                dot.classList.add('indicator-dot');
+                if (indice === indiceAtual) dot.classList.add('active');
+                
+                dot.addEventListener('click', () => {
+                    if (indice !== indiceAtual && !emAnimacao) {
+                        const direcao = indice > indiceAtual ? 'next' : 'prev';
+                        atualizarSlide(indice, direcao);
+                    }
+                });
+                elContainerIndicadores.appendChild(dot);
+            });
+        }
+
+        // Atualiza os indicadores visuais ativos
+        function atualizarIndicadores() {
+            const dots = document.querySelectorAll('.indicator-dot');
+            dots.forEach((dot, indice) => {
+                if (indice === indiceAtual) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        // Faz o gerenciamento encadeado das classes de animação CSS
+        function atualizarSlide(proximoIndice, direcao) {
+            if (emAnimacao) return;
+            emAnimacao = true;
+
+            const slideAtual = slides[indiceAtual];
+            const proximoSlide = slides[proximoIndice];
+
+            const classeSaida = direcao === 'next' ? 'to-left' : 'to-right';
+            const classeEntrada = direcao === 'next' ? 'from-right' : 'from-left';
+
+            // 1. Inicia animação de saída no slide visível
+            slideAtual.classList.add(classeSaida);
+
+            setTimeout(() => {
+                // 2. Esconde o slide antigo após terminar a saída
+                slideAtual.classList.remove('active', classeSaida);
+
+                // Altera o estado do índice
+                indiceAtual = proximoIndice;
+                atualizarIndicadores();
+
+                // 3. Torna o próximo slide visível aplicando a animação de entrada
+                proximoSlide.classList.add('active', classeEntrada);
+
+                setTimeout(() => {
+                    // 4. Remove a classe temporária de entrada ao finalizar o movimento
+                    proximoSlide.classList.remove(classeEntrada);
+                    emAnimacao = false;
+                }, tempoMetadeTransicao);
+
+            }, tempoMetadeTransicao);
+        }
+
+        // Listeners para navegação cíclica infinita (Loop)
+        elBtnPrev.addEventListener('click', () => {
+            if (emAnimacao) return;
+            const novoIndice = indiceAtual === 0 ? slides.length - 1 : indiceAtual - 1;
+            atualizarSlide(novoIndice, 'prev');
+        });
+
+        elBtnNext.addEventListener('click', () => {
+            if (emAnimacao) return;
+            const novoIndice = indiceAtual === slides.length - 1 ? 0 : indiceAtual + 1;
+            atualizarSlide(novoIndice, 'next');
+        });
+
+        // Inicializa o componente assim que a árvore DOM estiver montada
+        document.addEventListener('DOMContentLoaded', () => {
+            inicializarIndicadores();
+        });
+    </script>
+</body>
+</html>

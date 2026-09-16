@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plano Pessoal de Estudos 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Nunito:wght@400;700;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #080808;
+            --snd-bg-color: #131313;
+            --text-color: #ffffff;
+            --main-color: #8DDBFC;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                linear-gradient(rgba(141, 219, 252, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(141, 219, 252, 0.04) 1px, transparent 1px),
+                radial-gradient(circle at top center, var(--snd-bg-color) 0%, var(--bg-color) 100%);
+            background-size: 40px 40px, 40px 40px, 100% 100%;
+            background-attachment: fixed;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .planner-container {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            position: relative;
+        }
+
+     
+        .planner-container::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(141, 219, 252, 0.06) 0%, transparent 60%);
+            z-index: -1;
+            filter: blur(50px);
+            pointer-events: none;
+        }
+
+        .header-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2.2rem;
+            color: var(--main-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            word-spacing: 5px;
+            border: 2px solid rgba(141, 219, 252, 0.2);
+            border-radius: 25px;
+            padding: 15px 60px;
+            text-align: center;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            background-color: var(--snd-bg-color);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px); 
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 2px solid rgba(141, 219, 252, 0.2);
+            border-radius: 30px;
+            overflow: hidden;
+            text-align: center;
+            background-color: var(--snd-bg-color);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        th,
+        td {
+            padding: 15px 10px;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-weight: 900;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        th:last-child,
+        td:last-child {
+            border-right: none;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .periodo {
+            color: var(--main-color);
+            font-size: 1.1rem;
+            width: 120px;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        thead th {
+            color: var(--main-color);
+            font-size: 1.2rem;
+            padding-top: 20px;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        thead th span {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--text-color);
+            opacity: 0.5;
+            margin-top: 4px;
+            font-weight: 700;
+        }
+
+        tbody td {
+            color: var(--text-color);
+            background-color: transparent;
+            cursor: pointer;
+        }
+
+        tbody td:hover {
+            background-color: var(--bg-color);
+            color: var(--main-color);
+            transform: scale(1.03);
+            box-shadow: inset 0 0 15px rgba(141, 219, 252, 0.15);
+            border-radius: 8px;
+        }
+
+   
+        .highlight-track {
+            background-color: rgba(141, 219, 252, 0.03) !important;
+        }
+
+        .current-day-col {
+            background-color: rgba(141, 219, 252, 0.08) !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="planner-container">
+        <div class="header-title">
+            <span>Plano Pessoal de Estudos</span>
+            <span>2026</span>
+        </div>
+
+        <div class="table-responsive">
+            <table id="studyTable">
+                <thead>
+                    <tr>
+                        <th>Hor <span>Horário</span></th>
+                        <th>Seg <span>Segunda-Feira</span></th>
+                        <th>Ter <span>Terça-Feira</span></th>
+                        <th>Qua <span>Quarta-Feira</span></th>
+                        <th>Qui <span>Quinta-Feira</span></th>
+                        <th>Sex <span>Sexta-Feira</span></th>
+                        <th>Sáb <span>Sábado</span></th>
+                        <th>Dom <span>Domingo</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="periodo">Manhã</td>
+                        <td>Senai</td>
+                        <td>Humanas</td>
+                        <td>Matematica</td>
+                        <td>Linguagens</td>
+                        <td>Natureza</td>
+                        <td>Revisão</td>
+                        <td>Descanso</td>
+                    </tr>
+                    <tr>
+                        <td class="periodo">Tarde</td>
+                        <td>Sesi/Senai</td>
+                        <td>Sesi/Senai</td>
+                        <td>Sesi/Senai</td>
+                        <td>Sesi/Senai</td>
+                        <td>Senai</td>
+                        <td>Descanso</td>
+                        <td>Descanso</td>
+                    </tr>
+                    <tr>
+                        <td class="periodo">Noite</td>
+                        <td>Revisão</td>
+                        <td>Contraturno</td>
+                        <td>Contraturno</td>
+                        <td>Contraturno</td>
+                        <td>Revisão</td>
+                        <td>Revisão</td>
+                        <td>Descanso</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const table = document.getElementById('studyTable');
+        const cells = table.querySelectorAll('tbody td:not(.periodo)');
+        const rows = table.querySelectorAll('tbody tr');
+        const headers = table.querySelectorAll('thead th');
+
+        cells.forEach((cell, cellIndex) => {
+            cell.addEventListener('mouseenter', () => {
+                const colIndex = cell.cellIndex;
+
+                cell.parentElement.classList.add('highlight-track');
+
+                rows.forEach(row => {
+                    row.cells[colIndex].classList.add('highlight-track');
+                });
+                headers[colIndex].classList.add('current-day-col');
+            });
+
+            cell.addEventListener('mouseleave', () => {
+                const colIndex = cell.cellIndex;
+
+
+                cell.parentElement.classList.remove('highlight-track');
+                rows.forEach(row => {
+                    row.cells[colIndex].classList.remove('highlight-track');
+                });
+                headers[colIndex].classList.remove('current-day-col');
+            });
+        });
+
+    </script>
+</body>
+
+</html>

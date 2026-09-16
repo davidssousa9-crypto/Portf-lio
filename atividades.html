@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Áreas de Estudo</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" href="areas-de-estudo.css">
+</head>
+
+<body>
+
+
+    <style>
+        :root {
+         
+            --bg-color: #080808;
+            --snd-bg-color: #131313;
+            --text-color: #ffffff;
+            --main-color: #8DDBFC;
+
+           
+            --main-rgb: 141, 219, 252;
+            --text-muted: rgba(255, 255, 255, 0.42);
+            --text-dim: rgba(255, 255, 255, 0.68);
+            --border-subtle: rgba(255, 255, 255, 0.07);
+            --border-neon: rgba(141, 219, 252, 0.38);
+
+         
+            --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+  
+            --dur-fast: 0.22s;
+            --dur-base: 0.40s;
+            --dur-enter: 0.60s;
+
+         
+            --r-card: 16px;
+            --r-icon: 13px;
+            --r-btn: 10px;
+            --r-badge: 100px;
+
+     
+            --font: 'Poppins', sans-serif;
+        }
+
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: radial-gradient(circle,
+                    rgba(255, 255, 255, 0.032) 1px,
+                    transparent 1px);
+            background-size: 28px 28px;
+        }
+
+      
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 65% 40% at 12% 8%, rgba(var(--main-rgb), 0.055) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 35% at 88% 92%, rgba(var(--main-rgb), 0.040) 0%, transparent 55%);
+        }
+
+
+        .study-areas {
+            position: relative;
+            z-index: 1;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 88px 48px 96px;
+        }
+
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 76px;
+        }
+
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 16px;
+            border: 1px solid rgba(var(--main-rgb), 0.22);
+            border-radius: var(--r-badge);
+            background: rgba(var(--main-rgb), 0.07);
+            color: var(--main-color);
+            font-size: 0.70rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 22px;
+        }
+
+        .header-badge i {
+            font-size: 0.72rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4.5vw, 3.4rem);
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            line-height: 1.12;
+            margin-bottom: 16px;
+            color: var(--text-color);
+        }
+
+      
+        .section-title .highlight {
+            color: var(--main-color);
+            position: relative;
+            display: inline-block;
+        }
+
+  
+        .section-title .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 4px;
+            right: 4px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--main-color) 0%, transparent 100%);
+            border-radius: 2px;
+            opacity: 0.55;
+        }
+
+        .section-subtitle {
+            max-width: 480px;
+            margin: 0 auto;
+            font-size: 0.94rem;
+            font-weight: 300;
+            color: var(--text-muted);
+            line-height: 1.78;
+        }
+
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+        }
+
+
+        .study-card {
+            position: relative;
+            background: var(--snd-bg-color);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--r-card);
+            padding: 28px 22px 24px;
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            outline: none;
+
+    
+            opacity: 0;
+            transform: translateY(30px);
+
+            transition:
+                opacity var(--dur-enter) var(--ease-spring),
+                transform var(--dur-enter) var(--ease-spring),
+                border-color var(--dur-fast) var(--ease-smooth),
+                box-shadow var(--dur-fast) var(--ease-smooth);
+        }
+
+        .study-card:focus-visible {
+            outline: 2px solid rgba(var(--main-rgb), 0.55);
+            outline-offset: 3px;
+        }
+
+        .study-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        .study-card:hover {
+            border-color: var(--border-neon);
+            box-shadow:
+                0 0 0 1px rgba(var(--main-rgb), 0.10),
+                0 6px 28px rgba(var(--main-rgb), 0.11),
+                0 18px 48px rgba(0, 0, 0, 0.50);
+            transform: translateY(-7px);
+        }
+
+       
+        .study-card.visible:hover {
+            transform: translateY(-7px);
+        }
+
+  
+        .study-card:active {
+            transform: translateY(-3px) scale(0.985);
+        }
+
+    
+        .study-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 18%;
+            right: 18%;
+            height: 1px;
+            border-radius: 0 0 4px 4px;
+            pointer-events: none;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(var(--main-rgb), 0) 10%,
+                    rgba(var(--main-rgb), 0) 90%,
+                    transparent);
+            transition: background var(--dur-fast) var(--ease-smooth);
+        }
+
+        .study-card:hover::before {
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(var(--main-rgb), 0.50) 30%,
+                    rgba(var(--main-rgb), 0.50) 70%,
+                    transparent);
+        }
+
+
+
+
+        .card-glow {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity var(--dur-fast) ease;
+
+      
+            background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 50%),
+                    rgba(var(--main-rgb), 0.09),
+                    transparent 65%);
+        }
+
+        .study-card:hover .card-glow {
+            opacity: 1;
+        }
+
+
+
+        .card-icon {
+            position: relative;
+            z-index: 1;
+            width: 54px;
+            height: 54px;
+            border-radius: var(--r-icon);
+            background: rgba(var(--main-rgb), 0.07);
+            border: 1px solid rgba(var(--main-rgb), 0.14);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition:
+                background var(--dur-fast) ease,
+                border-color var(--dur-fast) ease,
+                box-shadow var(--dur-fast) ease,
+                transform var(--dur-fast) var(--ease-spring);
+        }
+
+        .card-icon i {
+            font-size: 1.30rem;
+            color: var(--main-color);
+            transition: transform var(--dur-fast) var(--ease-spring);
+        }
+
+    
+        .study-card:hover .card-icon {
+            background: rgba(var(--main-rgb), 0.14);
+            border-color: rgba(var(--main-rgb), 0.30);
+            box-shadow: 0 0 18px rgba(var(--main-rgb), 0.20);
+            transform: scale(1.07);
+        }
+
+        .study-card:hover .card-icon i {
+            transform: scale(1.10);
+        }
+
+
+        .card-body {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .card-title {
+            font-size: 1.00rem;
+            font-weight: 600;
+            color: var(--text-color);
+            line-height: 1.30;
+            transition: color var(--dur-fast) ease;
+        }
+
+        .study-card:hover .card-title {
+            color: var(--main-color);
+        }
+
+
+        .card-description {
+            font-size: 0.80rem;
+            font-weight: 300;
+            color: var(--text-muted);
+            line-height: 1.68;
+            flex: 1;
+        }
+
+ 
+        .card-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            align-self: flex-start;
+            padding: 4px 11px;
+            border-radius: var(--r-badge);
+            background: rgba(var(--main-rgb), 0.08);
+            border: 1px solid rgba(var(--main-rgb), 0.16);
+            color: var(--main-color);
+            font-size: 0.71rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            margin-top: 6px;
+        }
+
+        .card-badge i {
+            font-size: 0.64rem;
+        }
+        .card-btn {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px 18px;
+            border-radius: var(--r-btn);
+            background: rgba(var(--main-rgb), 0.05);
+            border: 1px solid rgba(var(--main-rgb), 0.14);
+            color: var(--main-color);
+            font-family: var(--font);
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition:
+                background var(--dur-fast) ease,
+                border-color var(--dur-fast) ease,
+                box-shadow var(--dur-fast) ease;
+        }
+
+        .card-btn i {
+            font-size: 0.76rem;
+            transition: transform var(--dur-fast) var(--ease-spring);
+        }
+
+        .study-card:hover .card-btn {
+            background: rgba(var(--main-rgb), 0.12);
+            border-color: rgba(var(--main-rgb), 0.32);
+            box-shadow: 0 0 12px rgba(var(--main-rgb), 0.14);
+        }
+
+        .study-card:hover .card-btn i {
+            transform: translateX(4px);
+        }
+
+
+
+        @media (max-width: 1200px) {
+            .study-areas {
+                padding: 72px 36px 80px;
+            }
+
+            .cards-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+
+        @media (max-width: 840px) {
+            .study-areas {
+                padding: 60px 24px 68px;
+            }
+
+            .section-header {
+                margin-bottom: 52px;
+            }
+
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+
+        @media (max-width: 480px) {
+            .study-areas {
+                padding: 48px 16px 56px;
+            }
+
+            .section-header {
+                margin-bottom: 40px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        @media (prefers-reduced-motion: reduce) {
+            .study-card {
+                opacity: 1;
+                transform: none;
+                transition:
+                    border-color var(--dur-fast) ease,
+                    box-shadow var(--dur-fast) ease;
+            }
+
+            .study-card:hover,
+            .study-card.visible:hover {
+                transform: none;
+            }
+
+            .study-card:hover .card-icon,
+            .study-card:hover .card-icon i {
+                transform: none;
+            }
+
+            .study-card:hover .card-btn i {
+                transform: none;
+            }
+        }
+    </style>
+
+    <section class="study-areas" id="areas-de-estudo">
+
+
+        <header class="section-header">
+            <div class="header-badge">
+                <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+                <span>Plataforma de Estudos</span>
+            </div>
+            <h1 class="section-title">
+                Áreas de <span class="highlight">Estudo</span>
+            </h1>
+            <p class="section-subtitle">
+                Selecione uma área e explore conteúdos cuidadosamente organizados
+                para maximizar seu aprendizado e desempenho.
+            </p>
+        </header>
+
+
+        <div class="cards-grid">
+
+
+            <article class="study-card" data-href="linguagens.html" role="button" tabindex="0"
+                aria-label="Explorar Linguagens — 5 matérias">
+
+                <div class="card-glow" aria-hidden="true"></div>
+
+
+                <div class="card-icon" aria-hidden="true">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+
+
+                <div class="card-body">
+                    <h3 class="card-title">Linguagens</h3>
+                    <p class="card-description">
+                        Desenvolvendo fluência em inglês e aprimorando
+                        o português com redações e interpretações de texto.
+                    </p>
+                    <span class="card-badge">
+                        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                        2 matérias
+                    </span>
+                </div>
+
+
+                <button class="card-btn" tabindex="-1" aria-hidden="true">
+                    Explorar
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </article>
+
+
+            <article class="study-card" data-href="humanas.html" role="button" tabindex="0"
+                aria-label="Explorar Ciências Humanas — 6 matérias">
+                <div class="card-glow" aria-hidden="true"></div>
+
+                <div class="card-icon" aria-hidden="true">
+                    <i class="fa-solid fa-landmark"></i>
+                </div>
+
+                <div class="card-body">
+                    <h3 class="card-title">Ciências Humanas</h3>
+                    <p class="card-description">
+                        Exploramdo história, filosofia, sociologia e geografia
+                        em uma jornada pelo pensamento e civilização humana.
+                    </p>
+                    <span class="card-badge">
+                        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                        4 matérias
+                    </span>
+                </div>
+
+                <button class="card-btn" tabindex="-1" aria-hidden="true">
+                    Explorar
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </article>
+
+
+            <article class="study-card" data-href="matematica.html" role="button" tabindex="0"
+                aria-label="Explorar Matemática — 7 matérias">
+                <div class="card-glow" aria-hidden="true"></div>
+
+                <div class="card-icon" aria-hidden="true">
+                    <i class="fa-solid fa-calculator"></i>
+                </div>
+
+                <div class="card-body">
+                    <h3 class="card-title">Matemática</h3>
+                    <p class="card-description">
+                        Busca dominar álgebra, geometria, cálculo e estatística com
+                        teoria aprofundada e exercícios resolvidos passo a passo.
+                    </p>
+                    <span class="card-badge">
+                        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                        2 matérias
+                    </span>
+                </div>
+
+                <button class="card-btn" tabindex="-1" aria-hidden="true">
+                    Explorar
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </article>
+
+
+            <article class="study-card" data-href="natureza.html" role="button" tabindex="0"
+                aria-label="Explorar Ciências da Natureza — 5 matérias">
+                <div class="card-glow" aria-hidden="true"></div>
+
+                <div class="card-icon" aria-hidden="true">
+                    <i class="fa-solid fa-flask"></i>
+                </div>
+
+                <div class="card-body">
+                    <h3 class="card-title">Ciências da Natureza</h3>
+                    <p class="card-description">
+                        Mergulhe em física, química e biologia com experimentos,
+                        leis e fenômenos naturais detalhadamente explicados.
+                    </p>
+                    <span class="card-badge">
+                        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                        3 matérias
+                    </span>
+                </div>
+
+                <button class="card-btn" tabindex="-1" aria-hidden="true">
+                    Explorar
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </article>
+
+
+            <article class="study-card" data-href="senai.html" role="button" tabindex="0"
+                aria-label="Explorar SENAI — 8 matérias">
+                <div class="card-glow" aria-hidden="true"></div>
+
+                <div class="card-icon" aria-hidden="true">
+                    <i class="fa-solid fa-industry"></i>
+                </div>
+
+                <div class="card-body">
+                    <h3 class="card-title">SENAI</h3>
+                    <p class="card-description">
+                        Formação técnica profissional com habilidades práticas
+                        e conteúdos industriais especializados do mercado.
+                    </p>
+                    <span class="card-badge">
+                        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                        1 matéria
+                    </span>
+                </div>
+
+                <button class="card-btn" tabindex="-1" aria-hidden="true">
+                    Explorar
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </article>
+
+        </div>
+
+
+    </section>
+
+
+    <script>
+        'use strict';
+
+
+
+        function navigate(url) {
+            window.location.href = url;
+        }
+
+
+        function initNavigation() {
+            const cards = document.querySelectorAll('.study-card[data-href]');
+
+            cards.forEach(card => {
+                const url = card.dataset.href;
+                if (!url) return;
+
+
+                card.addEventListener('click', () => navigate(url));
+
+
+                card.addEventListener('keydown', event => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        navigate(url);
+                    }
+                });
+            });
+        }
+
+        function initSpotlight() {
+            const cards = document.querySelectorAll('.study-card');
+
+            cards.forEach(card => {
+                card.addEventListener('mousemove', event => {
+                    const rect = card.getBoundingClientRect();
+
+
+                    const x = ((event.clientX - rect.left) / rect.width) * 100;
+                    const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+                    card.style.setProperty('--mx', `${x}%`);
+                    card.style.setProperty('--my', `${y}%`);
+                });
+
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.setProperty('--mx', '50%');
+                    card.style.setProperty('--my', '50%');
+                });
+            });
+        }
+
+
+        function initScrollAnimation() {
+
+
+            if (!('IntersectionObserver' in window)) {
+                document.querySelectorAll('.study-card').forEach(card => {
+                    card.classList.add('visible');
+                });
+                return;
+            }
+
+            const STAGGER_MS = 80;
+            const DURATION_MS = 600;
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+
+                    const card = entry.target;
+                    const index = parseInt(card.dataset.cardIndex, 10) || 0;
+                    const delay = index * STAGGER_MS;
+
+
+                    card.style.transitionDelay = `${delay}ms`;
+
+
+                    card.classList.add('visible');
+
+                    setTimeout(() => {
+                        card.style.transitionDelay = '0ms';
+                    }, DURATION_MS + delay + 50);
+
+
+                    observer.unobserve(card);
+                });
+            }, {
+                threshold: 0.10,
+                rootMargin: '0px 0px -40px 0px'
+            });
+
+            document.querySelectorAll('.study-card').forEach((card, index) => {
+                card.dataset.cardIndex = index;
+                observer.observe(card);
+            });
+        }
+
+
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            initSpotlight();
+            initScrollAnimation();
+        });
+    </script>
+</body>
+
+</html>
